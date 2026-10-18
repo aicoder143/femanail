@@ -1,8 +1,8 @@
 'use strict';
-const CACHE_NAME = 'femanail-static-v1';
+const CACHE_NAME = 'femanail-static-v2';
 const STATIC_FILES = [
   './', './index.html', './shortcodes.html', './styles.css', './app.js',
-  './shortcodes.js', './pwa.js', './manifest.webmanifest', './favicon.svg',
+  './shortcodes.js', './hero-banner.html', './hero-banner.js', './pwa.js', './manifest.webmanifest', './favicon.svg',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png'
 ];
