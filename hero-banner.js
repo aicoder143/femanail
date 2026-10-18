@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const ids = ['concept','ratio','placement','framing','background','backgroundCustom','outfit','outfitColor','outfitDetail','hair','hairColor','accessories','hand','posture','gaze','expression','lighting','extra'];
+  const ids = ['concept','ratio','placement','framing','background','backgroundCustom','outfit','outfitColor','outfitDetail','graphic','hair','hairColor','accessories','hand','posture','gaze','expression','lighting','extra'];
   const fields = Object.fromEntries(ids.map(id => [id, $(id)]));
   const tabs = [...document.querySelectorAll('[data-tab]')];
   const draftKey = 'femanail-hero-draft-v1';
@@ -29,21 +29,22 @@
       website: { concept: value('concept') || 'Professional website homepage', purpose: 'Hero image with clear visual hierarchy and usable space for website headline and buttons', aspect_ratio: value('ratio'), subject_placement: value('placement'), framing: value('framing'), text_instruction: 'Do not render headline, buttons, UI, logos, or words in the image; site text will be placed separately in HTML', safe_area: 'Keep the empty side clean and uncluttered; do not crop the face, hands, or important clothing details' },
       reference_image: reference ? { filename: reference.name, attach_original_file_with_prompt: true, use_as_primary_identity_reference: true, preserve_facial_proportions: true, preserve_age_and_skin_tone: true, preserve_natural_skin_texture: true, note: 'The image bytes are not included in this text export.' } : { attached: false, note: 'For identity preservation, attach an original reference photo alongside this prompt.' },
       subject: { description: 'One realistic human subject appropriate to the website concept', expression: value('expression') || 'Warm, natural expression', gaze: value('gaze'), skin_and_anatomy: 'Realistic pores, natural facial proportions, believable hands and fingers' },
-      wardrobe: { outfit_style: value('outfit') || 'Professional outfit suited to the website concept', outfit_color: value('outfitColor') || 'Color coordinated with the website palette', fabric_graphic_and_details: value('outfitDetail') || 'Realistic fabric texture and garment construction', accessories_and_makeup: value('accessories') || 'Tasteful, minimal styling' },
+      wardrobe: { outfit_style: value('outfit') || 'Professional outfit suited to the website concept', outfit_color: value('outfitColor') || 'Color coordinated with the website palette', fabric_and_garment_details: value('outfitDetail') || 'Realistic fabric texture and garment construction', graphic_or_embellishment: value('graphic') || 'No graphic specified', accessories_and_makeup: value('accessories') || 'Tasteful, minimal styling' },
       hair: { style: value('hair') || 'Natural, polished hairstyle', color_and_details: value('hairColor') || 'Natural hair color and individual strands' },
       pose: { body_posture: value('posture') || 'Relaxed, confident upper-body posture', hand_position: value('hand') || 'Hands relaxed and anatomically natural', tilt_direction_viewer_perspective: side, tilt_instruction: lean, shoulders: 'Relaxed and anatomically believable' },
       scene: { background: scene, custom_direction: value('backgroundCustom') || null, transparency: transparent ? 'Request genuine alpha transparency in PNG if supported; no white fill, checkerboard pattern, or hair halo' : 'Opaque background with subject separation', lighting: value('lighting'), color_accuracy: 'Natural skin tones and accurate garment colors' },
       output: { format: transparent ? 'PNG with alpha transparency if the generator supports it' : 'High-quality PNG or JPEG', aspect_ratio: value('ratio'), quality: 'High-resolution, crisp, photorealistic', composition: 'Designed to crop cleanly on desktop and mobile without losing the face or hands', extra_direction: value('extra') || null },
       avoid: ['Changed identity when a reference is attached','Plastic skin or excessive retouching','Extra fingers or distorted hands','Distorted clothing or accessories','Unnatural pose or exaggerated tilt','Text, watermark, logo, or fake website UI',...(transparent ? ['White background instead of transparency','Fake checkerboard transparency','White halo around hair or garment'] : [])]
     };
-    const prose = `${reference ? `Attach the reference photo named ${reference.name}. Preserve this person’s face, age, skin tone, and natural skin texture. ` : 'If an exact person is needed, attach a reference photo with this prompt. '}Create one photorealistic website hero banner for ${prompt.website.concept}. Use a ${value('ratio')} canvas with ${value('framing').toLowerCase()}. Place the subject ${value('placement').toLowerCase()} and leave clean space for website copy and buttons. Outfit: ${prompt.wardrobe.outfit_style}; color: ${prompt.wardrobe.outfit_color}; detail: ${prompt.wardrobe.fabric_graphic_and_details}. Hair: ${prompt.hair.style}; ${prompt.hair.color_and_details}. Hands: ${prompt.pose.hand_position}. Posture: ${prompt.pose.body_posture}. ${lean}. Gaze: ${prompt.subject.gaze}. Expression: ${prompt.subject.expression}. Accessories and makeup: ${prompt.wardrobe.accessories_and_makeup}. Background: ${scene}${value('backgroundCustom') && value('background') !== 'Custom' ? `, ${value('backgroundCustom')}` : ''}. Lighting: ${value('lighting')}. ${transparent ? 'Request a real transparent PNG with clean hair and clothing edges if supported. ' : ''}${value('extra') ? `Extra direction: ${value('extra')}. ` : ''}Keep anatomy natural, colors accurate, and image free of text, logos, watermarks, and interface elements.`;
+    const prose = `${reference ? `Attach the reference photo named ${reference.name}. Preserve this person’s face, age, skin tone, and natural skin texture. ` : 'If an exact person is needed, attach a reference photo with this prompt. '}Create one photorealistic website hero banner for ${prompt.website.concept}. Use a ${value('ratio')} canvas with ${value('framing').toLowerCase()}. Place the subject ${value('placement').toLowerCase()} and leave clean space for website copy and buttons. Outfit: ${prompt.wardrobe.outfit_style}; color: ${prompt.wardrobe.outfit_color}; fabric and garment detail: ${prompt.wardrobe.fabric_and_garment_details}; graphic or embellishment: ${prompt.wardrobe.graphic_or_embellishment}. Hair: ${prompt.hair.style}; ${prompt.hair.color_and_details}. Hands: ${prompt.pose.hand_position}. Posture: ${prompt.pose.body_posture}. ${lean}. Gaze: ${prompt.subject.gaze}. Expression: ${prompt.subject.expression}. Accessories and makeup: ${prompt.wardrobe.accessories_and_makeup}. Background: ${scene}${value('backgroundCustom') && value('background') !== 'Custom' ? `, ${value('backgroundCustom')}` : ''}. Lighting: ${value('lighting')}. ${transparent ? 'Request a real transparent PNG with clean hair and clothing edges if supported. ' : ''}${value('extra') ? `Extra direction: ${value('extra')}. ` : ''}Keep anatomy natural, colors accurate, and image free of text, logos, watermarks, and interface elements.`;
     const shortcode = [
       `/hero-banner ${value('ratio')}`,
       `Concept: ${prompt.website.concept}`,
       `Placement: ${value('placement')}`,
       `Framing: ${value('framing')}`,
       `Outfit: ${prompt.wardrobe.outfit_style}, ${prompt.wardrobe.outfit_color}`,
-      value('outfitDetail') && `Outfit detail: ${value('outfitDetail')}`,
+      value('outfitDetail') && `Fabric: ${value('outfitDetail')}`,
+      value('graphic') && `Graphic: ${value('graphic')}`,
       `Hair: ${prompt.hair.style}${value('hairColor') ? `, ${value('hairColor')}` : ''}`,
       `Hands: ${prompt.pose.hand_position}`,
       `Posture: ${prompt.pose.body_posture}; tilt ${side} (viewer perspective)`,
@@ -73,9 +74,29 @@
     $('heroPerson').style.transform = `rotate(${tilt() === 'left' ? -7 : tilt() === 'right' ? 7 : 0}deg)`;
   };
   const refresh = () => { updateGuide(); render(); saveDraft(); };
-  for (const [preset, field] of [['outfitPreset','outfit'],['colorPreset','outfitColor'],['hairPreset','hair'],['handPreset','hand'],['posturePreset','posture'],['hairColorPreset','hairColor'],['accessoriesPreset','accessories'],['expressionPreset','expression']]) {
+  const updateHairSuggestions = () => {
+    const selected = $('outfitPreset').selectedOptions[0];
+    const family = selected?.parentElement?.tagName === 'OPTGROUP' ? selected.parentElement.label : '';
+    const outfit = $('outfitPreset').value.toLowerCase();
+    const suggestions = outfit.includes('half saree')
+      ? ['Traditional long braid with flowers','Classic braid with paranda','Half-up waves with face-framing strands','Center-parted low bun with jasmine gajra']
+      : outfit.includes('saree')
+        ? ['Center-parted low bun with jasmine gajra','Low chignon with fresh flowers','Traditional long braid with flowers','Soft side-parted waves']
+        : outfit.includes('sharara') || outfit.includes('gharara') || outfit.includes('lehenga')
+          ? ['Loose curls with maang tikka','Braided crown with low bun','Half-up waves with face-framing strands','Soft side-parted waves']
+          : family === 'Indian contemporary' || family === 'Classical Indian'
+            ? ['Soft side-parted waves','Traditional long braid with flowers','Center-parted low bun with jasmine gajra','Half-up waves with face-framing strands']
+            : family === 'Western'
+              ? ['Long soft Hollywood waves','Sleek low bun','High ponytail','Loose beach waves']
+              : [];
+    const group = $('hairSuggestions');
+    group.replaceChildren(...suggestions.map(name => new Option(name, name)));
+    group.label = suggestions.length ? `Suggested for ${family.toLowerCase()} outfits` : 'Choose an outfit for suggestions';
+  };
+  for (const [preset, field] of [['outfitPreset','outfit'],['colorPreset','outfitColor'],['hairPreset','hair'],['fabricPreset','outfitDetail'],['graphicPreset','graphic'],['handPreset','hand'],['posturePreset','posture'],['hairColorPreset','hairColor'],['accessoriesPreset','accessories'],['expressionPreset','expression']]) {
     $(preset).addEventListener('change', () => { if ($(preset).value) { fields[field].value = $(preset).value; refresh(); } });
   }
+  $('outfitPreset').addEventListener('change', updateHairSuggestions);
   for (const field of Object.values(fields)) { field.addEventListener('input', refresh); field.addEventListener('change', refresh); }
   document.querySelectorAll('input[name="tilt"]').forEach(input => input.addEventListener('change', refresh));
   $('reference').addEventListener('change', event => {
@@ -90,8 +111,9 @@
   $('generate').addEventListener('click', () => { refresh(); setStatus('Hero prompt updated.'); $('heroOutput').scrollIntoView({behavior:'smooth',block:'nearest'}); });
   $('copyHero').addEventListener('click', async () => { await copy(outputs[selectedTab]); setStatus('Prompt copied.'); });
   $('downloadHero').addEventListener('click', () => { const blob = new Blob([outputs[selectedTab]], {type: selectedTab === 'json' ? 'application/json' : 'text/plain'}); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `femanail-hero-banner-${selectedTab}.${selectedTab === 'json' ? 'json' : 'txt'}`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); setStatus('Prompt downloaded.'); });
-  $('loadExample').addEventListener('click', () => { const example = {concept:'Personal brand homepage portrait',ratio:'16:9',placement:'Right, leave space on left',framing:'Three-quarter upper-body portrait',background:'Transparent cutout',backgroundCustom:'',outfit:'Chunky knitted crew-neck sweater',outfitColor:'Bright mustard yellow',outfitDetail:'Thick visible knit with playful embroidered crocodile graphic at front center; modest round neckline',hair:'High messy bun with face-framing strands',hairColor:'Natural black with subtle warm brown highlights',accessories:'Small gold hoop earrings, soft glamorous makeup, subtle bindi',hand:'One hand supporting the cheek and jaw; other arm relaxed',posture:'Relaxed seated upper-body pose',gaze:"Looking toward viewer's left",expression:'Warm, cheerful natural smile',lighting:'Soft professional studio light',extra:'Preserve natural skin texture; clean hair, sleeve, and shoulder edges'}; for (const [id,text] of Object.entries(example)) fields[id].value = text; document.querySelector('input[name="tilt"][value="left"]').checked = true; refresh(); setStatus('Reference example loaded. Add a photo to preserve identity.'); });
-  $('resetHero').addEventListener('click', () => { for (const field of Object.values(fields)) field.value = ''; fields.ratio.value = '16:9'; fields.placement.value = 'Right, leave space on left'; fields.framing.value = 'Three-quarter upper-body portrait'; fields.background.value = 'Transparent cutout'; fields.gaze.value = 'Looking at camera'; fields.lighting.value = 'Soft professional studio light'; document.querySelector('input[name="tilt"][value="center"]').checked = true; $('removeReference').click(); refresh(); setStatus('Hero brief reset.'); });
+  $('loadExample').addEventListener('click', () => { const example = {concept:'Personal brand homepage portrait',ratio:'16:9',placement:'Right, leave space on left',framing:'Three-quarter upper-body portrait',background:'Transparent cutout',backgroundCustom:'',outfit:'Chunky knitted crew-neck sweater',outfitColor:'Bright mustard yellow',outfitDetail:'Thick visible knit with a modest round neckline',graphic:'Playful embroidered crocodile applique',hair:'High messy bun with face-framing strands',hairColor:'Natural black with subtle warm brown highlights',accessories:'Small gold hoop earrings, soft glamorous makeup, subtle bindi',hand:'One hand supporting the cheek and jaw; other arm relaxed',posture:'Relaxed seated upper-body pose',gaze:"Looking toward viewer's left",expression:'Warm, cheerful natural smile',lighting:'Soft professional studio light',extra:'Preserve natural skin texture; clean hair, sleeve, and shoulder edges'}; for (const [id,text] of Object.entries(example)) fields[id].value = text; document.querySelector('input[name="tilt"][value="left"]').checked = true; refresh(); setStatus('Reference example loaded. Add a photo to preserve identity.'); });
+  $('resetHero').addEventListener('click', () => { for (const field of Object.values(fields)) field.value = ''; document.querySelectorAll('.detail-field select').forEach(select => { if (select.id !== 'hairPreset') select.selectedIndex = 0; }); updateHairSuggestions(); fields.ratio.value = '16:9'; fields.placement.value = 'Right, leave space on left'; fields.framing.value = 'Three-quarter upper-body portrait'; fields.background.value = 'Transparent cutout'; fields.gaze.value = 'Looking at camera'; fields.lighting.value = 'Soft professional studio light'; document.querySelector('input[name="tilt"][value="center"]').checked = true; $('removeReference').click(); refresh(); setStatus('Hero brief reset.'); });
   try { const saved = JSON.parse(localStorage.getItem(draftKey) || 'null'); if (saved) { for (const id of ids) if (typeof saved[id] === 'string') fields[id].value = saved[id]; if (['left','center','right'].includes(saved.tilt)) document.querySelector(`input[name="tilt"][value="${saved.tilt}"]`).checked = true; } } catch { /* invalid draft */ }
+  updateHairSuggestions();
   refresh();
 })();
