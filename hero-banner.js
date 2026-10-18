@@ -37,7 +37,27 @@
       avoid: ['Changed identity when a reference is attached','Plastic skin or excessive retouching','Extra fingers or distorted hands','Distorted clothing or accessories','Unnatural pose or exaggerated tilt','Text, watermark, logo, or fake website UI',...(transparent ? ['White background instead of transparency','Fake checkerboard transparency','White halo around hair or garment'] : [])]
     };
     const prose = `${reference ? `Attach the reference photo named ${reference.name}. Preserve this person’s face, age, skin tone, and natural skin texture. ` : 'If an exact person is needed, attach a reference photo with this prompt. '}Create one photorealistic website hero banner for ${prompt.website.concept}. Use a ${value('ratio')} canvas with ${value('framing').toLowerCase()}. Place the subject ${value('placement').toLowerCase()} and leave clean space for website copy and buttons. Outfit: ${prompt.wardrobe.outfit_style}; color: ${prompt.wardrobe.outfit_color}; detail: ${prompt.wardrobe.fabric_graphic_and_details}. Hair: ${prompt.hair.style}; ${prompt.hair.color_and_details}. Hands: ${prompt.pose.hand_position}. Posture: ${prompt.pose.body_posture}. ${lean}. Gaze: ${prompt.subject.gaze}. Expression: ${prompt.subject.expression}. Accessories and makeup: ${prompt.wardrobe.accessories_and_makeup}. Background: ${scene}${value('backgroundCustom') && value('background') !== 'Custom' ? `, ${value('backgroundCustom')}` : ''}. Lighting: ${value('lighting')}. ${transparent ? 'Request a real transparent PNG with clean hair and clothing edges if supported. ' : ''}${value('extra') ? `Extra direction: ${value('extra')}. ` : ''}Keep anatomy natural, colors accurate, and image free of text, logos, watermarks, and interface elements.`;
-    return { json: JSON.stringify(prompt, null, 2), chatgpt: `Create an image using this brief:\n\n${prose}`, gemini: `Generate one image from the following creative brief:\n\n${prose}` };
+    const shortcode = [
+      `/hero-banner ${value('ratio')}`,
+      `Concept: ${prompt.website.concept}`,
+      `Placement: ${value('placement')}`,
+      `Framing: ${value('framing')}`,
+      `Outfit: ${prompt.wardrobe.outfit_style}, ${prompt.wardrobe.outfit_color}`,
+      value('outfitDetail') && `Outfit detail: ${value('outfitDetail')}`,
+      `Hair: ${prompt.hair.style}${value('hairColor') ? `, ${value('hairColor')}` : ''}`,
+      `Hands: ${prompt.pose.hand_position}`,
+      `Posture: ${prompt.pose.body_posture}; tilt ${side} (viewer perspective)`,
+      `Gaze: ${value('gaze')}`,
+      `Expression: ${prompt.subject.expression}`,
+      value('accessories') && `Accessories and makeup: ${value('accessories')}`,
+      `Background: ${scene}${value('backgroundCustom') && value('background') !== 'Custom' ? `, ${value('backgroundCustom')}` : ''}`,
+      `Lighting: ${value('lighting')}`,
+      transparent && 'Output: genuine transparent PNG if supported; clean hair edges',
+      reference && `Reference: attach ${reference.name}; preserve identity and natural skin texture`,
+      value('extra') && `Extra: ${value('extra')}`,
+      'Leave space for website text; no rendered words, logos, or watermark'
+    ].filter(Boolean).join(' | ');
+    return { json: JSON.stringify(prompt, null, 2), shortcode, chatgpt: `Create an image using this brief:\n\n${prose}`, gemini: `Generate one image from the following creative brief:\n\n${prose}` };
   };
   const render = () => { outputs = build(); $('heroOutput').textContent = outputs[selectedTab]; };
   const saveDraft = () => {
