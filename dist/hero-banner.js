@@ -73,7 +73,7 @@
     $('heroPerson').style.transform = `rotate(${tilt() === 'left' ? -7 : tilt() === 'right' ? 7 : 0}deg)`;
   };
   const refresh = () => { updateGuide(); render(); saveDraft(); };
-  for (const [preset, field] of [['outfitPreset','outfit'],['colorPreset','outfitColor'],['hairPreset','hair'],['handPreset','hand'],['posturePreset','posture']]) {
+  for (const [preset, field] of [['outfitPreset','outfit'],['colorPreset','outfitColor'],['hairPreset','hair'],['handPreset','hand'],['posturePreset','posture'],['hairColorPreset','hairColor'],['accessoriesPreset','accessories'],['expressionPreset','expression']]) {
     $(preset).addEventListener('change', () => { if ($(preset).value) { fields[field].value = $(preset).value; refresh(); } });
   }
   for (const field of Object.values(fields)) { field.addEventListener('input', refresh); field.addEventListener('change', refresh); }
