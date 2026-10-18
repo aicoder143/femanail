@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME = 'femanail-static-v4';
+const CACHE_NAME = 'femanail-static-v5';
 const STATIC_FILES = [
   './', './index.html', './shortcodes.html', './styles.css', './app.js',
   './shortcodes.js', './hero-banner.html', './hero-banner.js', './pwa.js', './manifest.webmanifest', './favicon.svg',
